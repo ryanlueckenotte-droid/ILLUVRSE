@@ -36,7 +36,7 @@ const studioSections = [
   { label: "Scripts", icon: FileText, href: "/studio/scripts" },
   { label: "Storyboards", icon: ImageIcon, href: "/studio/storyboards" },
   { label: "Scenes", icon: Film, href: "/studio/scenes" },
-  { label: "Timeline", icon: Layers, comingSoon: true },
+  { label: "Timeline", icon: Layers, href: "/studio/timeline" },
   { label: "Assets", icon: Archive, comingSoon: true },
   { label: "Exports", icon: Download, comingSoon: true },
   { label: "Canvas Lab", icon: FlaskConical, href: "/lab/canvas" }
@@ -48,7 +48,7 @@ const engineStatus = [
   { label: "Playwright Lab", status: "Active" },
   { label: "Drawing Command System", status: "Active" },
   { label: "Story Engine", status: "Planned" },
-  { label: "Animation Timeline", status: "Planned" },
+  { label: "Animation Timeline", status: "Active" },
   { label: "Publishing Engine", status: "Planned" },
   { label: "Business Engine", status: "Planned" }
 ];
@@ -191,9 +191,9 @@ export default function StudioPage() {
                 <Sparkles className="h-5 w-5" />
                 <h3 className="font-semibold">Next Recommended Build</h3>
               </div>
-              <h4 className="text-lg font-bold text-white">Scene Builder v1</h4>
+              <h4 className="text-lg font-bold text-white">Timeline Planner v1</h4>
               <p className="mt-1 text-sm text-slate-300 leading-relaxed">
-                Define saveable scene JSON with background, props, characters, camera framing, and shot metadata.
+                Define the first timing plan format with tracks, items, start times, durations, labels, and actions.
               </p>
             </section>
           </div>

@@ -92,6 +92,11 @@ Define panel-by-panel visual planning with shots, camera movement, action, dialo
 
 Add keyframes, easing, timing, layers, playback, and frame inspection.
 
+**Status: v1 Implemented**
+- Location: `/studio/timeline`
+- Features: Visual timeline tracks, percentage-based item blocks, temporal planning, selected item editor, and live JSON export.
+- JSON Format: Includes `version`, `id`, `storyboardId`, `title`, `fps`, `durationSeconds`, `tracks` array (camera, character, dialogue, effects) with `items` (start, duration, label, action, panelId), and `productionNotes` array.
+
 ### Phase 8: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
