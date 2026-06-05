@@ -14,6 +14,16 @@ Prompt
   -> Export animated episode
 ```
 
+## Current Next Step: Drawing Command System
+
+ILLUVRSE now supports a command-driven drawing system. This is the bridge between AI prompts and animation.
+
+- **Command-driven:** Every action on the canvas (drawing, clear, animation) is represented as a structured JSON command.
+- **Scene State:** The canvas maintains a local scene object model, allowing objects to be tracked by ID.
+- **Animation Tracks:** Animations are no longer hardcoded but are tracks that interpolate object properties over time.
+- **Local-first & Portable:** Commands and scene states can be exported as JSON, making them saveable and reusable.
+- **AI Foundation:** This provides a concrete "language" for the future AI Chief of Staff to control the creative studio.
+
 ## Roadmap
 
 ### Phase 1: Browser Automation Lab

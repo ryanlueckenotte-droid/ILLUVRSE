@@ -26,17 +26,32 @@ async function main() {
 
   await page.goto(targetUrl, { waitUntil: "networkidle" });
 
-  console.log("Step 1: Click Draw Circle");
-  await page.getByRole("button", { name: "Draw Circle" }).click();
+  console.log("Step 1: Click Load Example");
+  await page.getByRole("button", { name: "Load Example" }).click();
 
-  console.log("Step 2: Click Draw Rectangle");
-  await page.getByRole("button", { name: "Draw Rectangle" }).click();
+  console.log("Step 2: Click Export JSON");
+  await page.getByRole("button", { name: "Export JSON" }).click();
 
-  console.log("Step 3: Click Animate Ball");
-  await page.getByRole("button", { name: "Animate Ball" }).click();
+  console.log("Step 3: Verify Exported JSON contains 'otter-core'");
+  const exportedText = await page.locator("textarea[readonly]").inputValue();
+  if (!exportedText.includes("otter-core")) {
+    throw new Error("Exported JSON does not contain 'otter-core'");
+  }
+
+  console.log("Step 4: Run a custom animation command");
+  const customCommand = JSON.stringify({
+    action: "animate",
+    target: "platform",
+    from: { x: 480, y: 400 },
+    to: { x: 480, y: 100 },
+    duration: 1
+  });
+  await page.locator('textarea[placeholder*="action"]').fill(customCommand);
+  await page.getByRole("button", { name: "Run Command" }).click();
+
   await page.waitForTimeout(1200);
 
-  console.log("Step 4: Take screenshot");
+  console.log("Step 5: Take screenshot");
   await page.screenshot({ path: outputPath, fullPage: true });
 
   await browser.close();
