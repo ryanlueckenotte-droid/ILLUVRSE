@@ -14,7 +14,8 @@ import {
   Download,
   FlaskConical,
   Sparkles,
-  Zap
+  Zap,
+  Package
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -91,6 +92,30 @@ export default function StudioPage() {
             ))}
           </div>
         </section>
+
+        {/* Featured: Project Bundle */}
+        <Link href="/studio/project">
+          <section className="group relative overflow-hidden rounded-xl border border-violet-500/30 bg-violet-500/5 p-8 transition hover:bg-violet-500/10 hover:shadow-glow">
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-violet-300">
+                  <Package className="h-5 w-5" />
+                  <span className="text-xs font-bold uppercase tracking-widest">Episode Manifest</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white">Project Bundle v1</h3>
+                <p className="mt-2 text-slate-300 max-w-xl">
+                  The central package that connects characters, scenes, scripts, storyboards, and timelines into one portable local-first project.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-violet-500/20 px-4 py-2 text-sm font-bold text-violet-300 transition group-hover:bg-violet-500/30">
+                Manage Project <ArrowRight className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="absolute -right-4 top-1/2 -translate-y-1/2 opacity-5 transition-transform group-hover:scale-110">
+              <Package className="h-32 w-32" />
+            </div>
+          </section>
+        </Link>
 
         {/* Card Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
