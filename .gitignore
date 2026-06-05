@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env
+.env.*
+*.log
+*:Zone.Identifier
+.DS_Store
+__pycache__/
+.venv/
+venv/
+dist/
+build/
