@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Brain,
   CheckSquare,
+  Clapperboard,
   FlaskConical,
   MessageCircle,
   ScrollText,
@@ -16,6 +17,7 @@ import {
 
 const navItems = [
   { href: "/", label: "Chat", icon: MessageCircle },
+  { href: "/studio", label: "Studio", icon: Clapperboard },
   { href: "/memory", label: "Memory", icon: Brain },
   { href: "/tasks", label: "Tasks", icon: CheckSquare },
   { href: "/projects", label: "Projects", icon: ScrollText },
