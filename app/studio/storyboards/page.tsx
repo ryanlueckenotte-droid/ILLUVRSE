@@ -26,76 +26,11 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
-
-const DEFAULT_STORYBOARD = {
-  version: 1,
-  id: "storyboard-episode-001",
-  scriptId: "episode-001",
-  title: "Otter Core Awakens",
-  series: "ILLUVRSE Core",
-  format: "1-3 minute animated short",
-  panels: [
-    {
-      id: "panel-001",
-      sceneId: "scene-001",
-      title: "Core Flickers Awake",
-      description: "A dark cosmic grid fills the frame. A purple core begins to glow.",
-      shot: "wide",
-      camera: "slow push in",
-      characters: ["The Otter"],
-      dialogue: "System awake. Imagination detected.",
-      action: "The purple core pulses, then the otter's eyes open.",
-      mood: "mysterious",
-      durationSeconds: 4
-    },
-    {
-      id: "panel-002",
-      sceneId: "scene-001",
-      title: "Glitches Scatter",
-      description: "Tiny chaotic glitch bugs crawl across broken project fragments.",
-      shot: "medium",
-      camera: "quick pan",
-      characters: ["The Otter", "Glitches"],
-      dialogue: "Uh oh. The chaos bugs are awake too.",
-      action: "Glitches scatter as the otter points toward the darkness.",
-      mood: "funny tension",
-      durationSeconds: 5
-    },
-    {
-      id: "panel-003",
-      sceneId: "scene-002",
-      title: "Ryan Finds the Spark",
-      description: "Ryan stands at the edge of the void and notices a small green World Spark.",
-      shot: "wide",
-      camera: "hold",
-      characters: ["Ryan", "The Otter", "World Spark"],
-      dialogue: "Can we actually build this?",
-      action: "The spark floats between Ryan and the otter.",
-      mood: "hopeful",
-      durationSeconds: 6
-    },
-    {
-      id: "panel-004",
-      sceneId: "scene-002",
-      title: "One Spark at a Time",
-      description: "The World Spark expands into a tiny glowing world.",
-      shot: "close-up",
-      camera: "slow zoom",
-      characters: ["The Otter", "World Spark"],
-      dialogue: "Yes. One world spark at a time.",
-      action: "The tiny world forms with a soft glow.",
-      mood: "motivational",
-      durationSeconds: 5
-    }
-  ],
-  productionNotes: [
-    "Storyboard panels should later compile into scene plans and animation timing.",
-    "Keep visual direction simple and readable."
-  ]
-};
+import { Storyboard } from "@/lib/studioTypes";
+import { DEFAULT_STORYBOARD } from "@/lib/studioDefaults";
 
 export default function StoryboardBuilderPage() {
-  const [storyboard, setStoryboard] = useState(DEFAULT_STORYBOARD);
+  const [storyboard, setStoryboard] = useState<Storyboard>(DEFAULT_STORYBOARD);
   const [selectedPanelId, setSelectedPanelId] = useState("panel-001");
   const [copied, setCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
@@ -108,7 +43,7 @@ export default function StoryboardBuilderPage() {
 
   // Initialize raw states and initial load
   useEffect(() => {
-    const saved = loadStudioJson<typeof DEFAULT_STORYBOARD | null>(STORAGE_KEYS.STORYBOARD, null);
+    const saved = loadStudioJson<Storyboard | null>(STORAGE_KEYS.STORYBOARD, null);
     if (saved) {
       setStoryboard(saved);
       setRawProductionNotes(saved.productionNotes.join("\n"));
@@ -133,7 +68,7 @@ export default function StoryboardBuilderPage() {
   };
 
   const loadSaved = () => {
-    const saved = loadStudioJson<typeof DEFAULT_STORYBOARD | null>(STORAGE_KEYS.STORYBOARD, null);
+    const saved = loadStudioJson<Storyboard | null>(STORAGE_KEYS.STORYBOARD, null);
     if (saved) {
       setStoryboard(saved);
       setRawProductionNotes(saved.productionNotes.join("\n"));

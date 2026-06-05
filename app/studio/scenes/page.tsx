@@ -23,50 +23,11 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
-
-const DEFAULT_SCENE = {
-  version: 1,
-  id: "scene-001",
-  title: "Otter Core Awakens",
-  description: "The otter AI wakes up inside a forgotten digital universe.",
-  background: {
-    type: "gradient",
-    from: "#0b1020",
-    to: "#3b0764",
-    mood: "cosmic"
-  },
-  camera: {
-    shot: "wide",
-    angle: "front",
-    movement: "slow-push-in"
-  },
-  characters: [
-    {
-      id: "otter-ai",
-      name: "The Otter",
-      x: 480,
-      y: 280,
-      pose: "awakening",
-      expression: "curious"
-    }
-  ],
-  props: [
-    {
-      id: "world-spark",
-      name: "World Spark",
-      x: 620,
-      y: 220,
-      type: "glowing-orb"
-    }
-  ],
-  notes: [
-    "First test scene for ILLUVRSE Core.",
-    "Designed to later convert into Drawing Command System commands."
-  ]
-};
+import { Scene } from "@/lib/studioTypes";
+import { DEFAULT_SCENE } from "@/lib/studioDefaults";
 
 export default function SceneBuilderPage() {
-  const [scene, setScene] = useState(DEFAULT_SCENE);
+  const [scene, setScene] = useState<Scene>(DEFAULT_SCENE);
   const [copied, setCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 

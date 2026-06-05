@@ -24,54 +24,11 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
-
-const DEFAULT_CHARACTER = {
-  version: 1,
-  id: "otter-ai",
-  name: "The Otter",
-  role: "ILLUVRSE guide / Chief of Staff",
-  species: "futuristic otter AI",
-  personality: [
-    "smart",
-    "loyal",
-    "playful",
-    "futuristic",
-    "direct"
-  ],
-  visual: {
-    primaryColor: "#a78bfa",
-    secondaryColor: "#38bdf8",
-    accentColor: "#42f58d",
-    style: "purple cosmic tech otter",
-    silhouette: "small otter body, expressive eyes, rounded ears, sleek tech markings"
-  },
-  expressions: [
-    "curious",
-    "focused",
-    "excited",
-    "concerned",
-    "determined"
-  ],
-  poses: [
-    "idle",
-    "pointing",
-    "thinking",
-    "celebrating",
-    "awakening"
-  ],
-  voice: {
-    tone: "warm, clever, direct",
-    catchphrase: "Let's build the universe."
-  },
-  storyFunction: "Assistant, narrator, creative partner, and first animated character for ILLUVRSE Core.",
-  notes: [
-    "This is the first reusable character card for ILLUVRSE.",
-    "Designed to be referenced by Scene Builder, Story Engine, and future Animation Timeline."
-  ]
-};
+import { Character } from "@/lib/studioTypes";
+import { DEFAULT_CHARACTER } from "@/lib/studioDefaults";
 
 export default function CharacterBuilderPage() {
-  const [character, setCharacter] = useState(DEFAULT_CHARACTER);
+  const [character, setCharacter] = useState<Character>(DEFAULT_CHARACTER);
   const [copied, setCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
@@ -142,7 +99,7 @@ export default function CharacterBuilderPage() {
     }
   };
 
-  const updateArrayField = (field: keyof typeof DEFAULT_CHARACTER, value: string) => {
+  const updateArrayField = (field: keyof Character, value: string) => {
     const lines = value.split("\n").map(line => line.trim()).filter(line => line !== "");
     setCharacter({ ...character, [field]: lines });
   };

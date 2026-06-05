@@ -28,6 +28,8 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { STUDIO_MODULES } from "@/lib/studioModules";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
+import { ProjectBundle } from "@/lib/studioTypes";
+import { DEFAULT_PROJECT_BUNDLE } from "@/lib/studioDefaults";
 
 const iconMap: Record<string, any> = {
   project: Package,
@@ -41,82 +43,8 @@ const iconMap: Record<string, any> = {
   canvas: FlaskConical
 };
 
-const DEFAULT_PROJECT_BUNDLE = {
-  version: 1,
-  id: "project-illuvrse-core-episode-001",
-  title: "ILLUVRSE Core Episode 001",
-  series: "ILLUVRSE Core",
-  episodeTitle: "Otter Core Awakens",
-  status: "planning",
-  localFirst: true,
-  modules: {
-    characterId: "otter-ai",
-    sceneId: "scene-001",
-    scriptId: "episode-001",
-    storyboardId: "storyboard-episode-001",
-    timelineId: "timeline-episode-001",
-    assetLibraryId: "assets-illuvrse-core",
-    exportPlanId: "export-episode-001"
-  },
-  pipeline: [
-    {
-      step: "Character",
-      route: "/studio/characters",
-      status: "ready",
-      summary: "Reusable otter AI guide character card."
-    },
-    {
-      step: "Scene",
-      route: "/studio/scenes",
-      status: "ready",
-      summary: "First saveable scene JSON for Otter Core Awakens."
-    },
-    {
-      step: "Script",
-      route: "/studio/scripts",
-      status: "ready",
-      summary: "Episode script with scenes, beats, and dialogue."
-    },
-    {
-      step: "Storyboard",
-      route: "/studio/storyboards",
-      status: "ready",
-      summary: "Panel-by-panel visual plan."
-    },
-    {
-      step: "Timeline",
-      route: "/studio/timeline",
-      status: "ready",
-      summary: "Timing plan with camera, character, dialogue, and effects tracks."
-    },
-    {
-      step: "Assets",
-      route: "/studio/assets",
-      status: "ready",
-      summary: "Reusable asset reference library."
-    },
-    {
-      step: "Export",
-      route: "/studio/exports",
-      status: "ready",
-      summary: "Local-first export and package metadata."
-    }
-  ],
-  nextActions: [
-    "Connect Script Builder output to Storyboard Builder defaults.",
-    "Connect Storyboard panels to Timeline Planner defaults.",
-    "Connect Asset Library references to Scene and Timeline data.",
-    "Later: save this bundle as a local JSON file."
-  ],
-  productionNotes: [
-    "This bundle is a manifest only in v1.",
-    "No files are written yet.",
-    "Future versions should load/save project bundles locally."
-  ]
-};
-
 export default function ProjectBundlePage() {
-  const [bundle, setBundle] = useState(DEFAULT_PROJECT_BUNDLE);
+  const [bundle, setBundle] = useState<ProjectBundle>(DEFAULT_PROJECT_BUNDLE);
   const [copied, setCopied] = useState(false);
   const [rawNextActions, setRawNextActions] = useState(DEFAULT_PROJECT_BUNDLE.nextActions.join("\n"));
   const [rawProductionNotes, setRawProductionNotes] = useState(DEFAULT_PROJECT_BUNDLE.productionNotes.join("\n"));
@@ -124,7 +52,7 @@ export default function ProjectBundlePage() {
 
   // Initial load
   useEffect(() => {
-    const saved = loadStudioJson<typeof DEFAULT_PROJECT_BUNDLE | null>(STORAGE_KEYS.PROJECT, null);
+    const saved = loadStudioJson<ProjectBundle | null>(STORAGE_KEYS.PROJECT, null);
     if (saved) {
       setBundle(saved);
       setRawNextActions(saved.nextActions?.join("\n") || "");
@@ -141,7 +69,7 @@ export default function ProjectBundlePage() {
   };
 
   const loadSaved = () => {
-    const saved = loadStudioJson<typeof DEFAULT_PROJECT_BUNDLE | null>(STORAGE_KEYS.PROJECT, null);
+    const saved = loadStudioJson<ProjectBundle | null>(STORAGE_KEYS.PROJECT, null);
     if (saved) {
       setBundle(saved);
       setRawNextActions(saved.nextActions?.join("\n") || "");
