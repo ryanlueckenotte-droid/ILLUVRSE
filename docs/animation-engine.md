@@ -79,19 +79,28 @@ Define episode scripts, story beats, dialogue, and production notes.
 - Features: Editable script properties, characters list, multi-scene beats, structured dialogue, and JSON export.
 - JSON Format: Includes `version`, `id`, `title`, `series`, `format`, `logline`, `theme`, `characters` array, `scenes` array (with `beats`), `dialogue` array (speaker, emotion, line), and `productionNotes` array.
 
-### Phase 6: Timeline Animation
+### Phase 6: Storyboard Builder
+
+Define panel-by-panel visual planning with shots, camera movement, action, dialogue, and timing.
+
+**Status: v1 Implemented**
+- Location: `/studio/storyboards`
+- Features: Visual panel cards, selected panel editor, storyboard preview, and live JSON export.
+- JSON Format: Includes `version`, `id`, `scriptId`, `title`, `series`, `format`, `panels` array (with `id`, `sceneId`, `title`, `description`, `shot`, `camera`, `characters` array, `dialogue`, `action`, `mood`, `durationSeconds`), and `productionNotes` array.
+
+### Phase 7: Timeline Animation
 
 Add keyframes, easing, timing, layers, playback, and frame inspection.
 
-### Phase 7: Prompt-to-Storyboard
+### Phase 8: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
 
-### Phase 8: Prompt-to-Animated-Short
+### Phase 9: Prompt-to-Animated-Short
 
 Generate a short sequence from prompt to storyboard to animated canvas playback.
 
-### Phase 9: Prompt-to-TV-Show Episode Engine
+### Phase 10: Prompt-to-TV-Show Episode Engine
 
 Assemble scripts, recurring characters, scenes, animation timelines, voice planning, export workflow, and review loops into a full local episode engine.
 
