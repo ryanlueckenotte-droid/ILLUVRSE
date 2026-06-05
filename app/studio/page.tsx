@@ -33,7 +33,7 @@ const pipelineSteps = [
 const studioSections = [
   { label: "Worlds", icon: Globe, comingSoon: true },
   { label: "Characters", icon: Users, href: "/studio/characters" },
-  { label: "Scripts", icon: FileText, comingSoon: true },
+  { label: "Scripts", icon: FileText, href: "/studio/scripts" },
   { label: "Storyboards", icon: ImageIcon, comingSoon: true },
   { label: "Scenes", icon: Film, href: "/studio/scenes" },
   { label: "Timeline", icon: Layers, comingSoon: true },
