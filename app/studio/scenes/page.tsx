@@ -15,10 +15,14 @@ import {
   Type,
   AlignLeft,
   Palette,
-  Info
+  Info,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 const DEFAULT_SCENE = {
   version: 1,
@@ -64,6 +68,40 @@ const DEFAULT_SCENE = {
 export default function SceneBuilderPage() {
   const [scene, setScene] = useState(DEFAULT_SCENE);
   const [copied, setCopied] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  // Initial load
+  useEffect(() => {
+    const saved = loadStudioJson(STORAGE_KEYS.SCENE, null);
+    if (saved) {
+      setScene(saved);
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    }
+  }, []);
+
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.SCENE, scene);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson(STORAGE_KEYS.SCENE, null);
+    if (saved) {
+      setScene(saved);
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.SCENE);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(scene, null, 2));
@@ -74,6 +112,8 @@ export default function SceneBuilderPage() {
   const resetScene = () => {
     if (confirm("Reset to default scene?")) {
       setScene(DEFAULT_SCENE);
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -164,21 +204,55 @@ export default function SceneBuilderPage() {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={resetScene}
               className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Scene
+              Reset
             </button>
             <button
-              onClick={() => setScene(DEFAULT_SCENE)}
+              onClick={() => {
+                setScene(DEFAULT_SCENE);
+                setStatusMessage("Loaded Core Scene");
+                setTimeout(() => setStatusMessage(""), 3000);
+              }}
               className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
             >
               <Film className="h-4 w-4" />
-              Load Otter Core Scene
+              Load Core
             </button>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+            <button
+              onClick={saveLocally}
+              className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+            >
+              <Save className="h-4 w-4" />
+              Save Locally
+            </button>
+            <button
+              onClick={loadSaved}
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+            >
+              <FolderOpen className="h-4 w-4" />
+              Load Saved
+            </button>
+            <button
+              onClick={clearSaved}
+              className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
+
+            {statusMessage && (
+              <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                {statusMessage}
+              </span>
+            )}
           </div>
         </div>
 

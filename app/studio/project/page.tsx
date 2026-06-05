@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -19,11 +19,15 @@ import {
   Layers,
   Archive,
   Download,
-  FlaskConical
+  FlaskConical,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { STUDIO_MODULES } from "@/lib/studioModules";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 const iconMap: Record<string, any> = {
   project: Package,
@@ -116,6 +120,44 @@ export default function ProjectBundlePage() {
   const [copied, setCopied] = useState(false);
   const [rawNextActions, setRawNextActions] = useState(DEFAULT_PROJECT_BUNDLE.nextActions.join("\n"));
   const [rawProductionNotes, setRawProductionNotes] = useState(DEFAULT_PROJECT_BUNDLE.productionNotes.join("\n"));
+  const [statusMessage, setStatusMessage] = useState("");
+
+  // Initial load
+  useEffect(() => {
+    const saved = loadStudioJson<typeof DEFAULT_PROJECT_BUNDLE | null>(STORAGE_KEYS.PROJECT, null);
+    if (saved) {
+      setBundle(saved);
+      setRawNextActions(saved.nextActions?.join("\n") || "");
+      setRawProductionNotes(saved.productionNotes?.join("\n") || "");
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    }
+  }, []);
+
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.PROJECT, bundle);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson<typeof DEFAULT_PROJECT_BUNDLE | null>(STORAGE_KEYS.PROJECT, null);
+    if (saved) {
+      setBundle(saved);
+      setRawNextActions(saved.nextActions?.join("\n") || "");
+      setRawProductionNotes(saved.productionNotes?.join("\n") || "");
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.PROJECT);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(bundle, null, 2));
@@ -128,6 +170,8 @@ export default function ProjectBundlePage() {
       setBundle(DEFAULT_PROJECT_BUNDLE);
       setRawNextActions(DEFAULT_PROJECT_BUNDLE.nextActions.join("\n"));
       setRawProductionNotes(DEFAULT_PROJECT_BUNDLE.productionNotes.join("\n"));
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -203,25 +247,57 @@ export default function ProjectBundlePage() {
               <h2 className="text-4xl font-black tracking-tight text-white mb-2">{bundle.title}</h2>
               <p className="text-xl text-slate-300 font-medium">{bundle.series} • {bundle.episodeTitle}</p>
 
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap gap-4 items-center">
                 <button
                   onClick={resetBundle}
                   className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
                 >
                   <RotateCcw className="h-4 w-4" />
-                  Reset Bundle
+                  Reset
                 </button>
                 <button
                    onClick={() => {
                      setBundle(DEFAULT_PROJECT_BUNDLE);
                      setRawNextActions(DEFAULT_PROJECT_BUNDLE.nextActions.join("\n"));
                      setRawProductionNotes(DEFAULT_PROJECT_BUNDLE.productionNotes.join("\n"));
+                     setStatusMessage("Loaded ILLUVRSE Core");
+                     setTimeout(() => setStatusMessage(""), 3000);
                    }}
                    className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
                 >
                   <Package className="h-4 w-4" />
-                  Load ILLUVRSE Core Bundle
+                  Load Core
                 </button>
+
+                <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+                <button
+                  onClick={saveLocally}
+                  className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+                >
+                  <Save className="h-4 w-4" />
+                  Save Locally
+                </button>
+                <button
+                  onClick={loadSaved}
+                  className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+                >
+                  <FolderOpen className="h-4 w-4" />
+                  Load Saved
+                </button>
+                <button
+                  onClick={clearSaved}
+                  className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Clear
+                </button>
+
+                {statusMessage && (
+                  <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                    {statusMessage}
+                  </span>
+                )}
               </div>
             </div>
           </section>
@@ -438,9 +514,14 @@ export default function ProjectBundlePage() {
                 <AlertTriangle className="h-5 w-5" />
                 <h3 className="font-semibold uppercase tracking-wider text-xs">Technical Status</h3>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-300 leading-relaxed mb-4">
                 Project Bundle v1 is a manifest only. It does not read or write local files yet. It defines the structure for future local-first save/load cycles.
               </p>
+              <div className="rounded-lg bg-black/20 p-3 border border-white/5">
+                <p className="text-[11px] text-slate-400 leading-tight">
+                  <span className="text-violet-300 font-bold">Local Save/Load v1:</span> This module stores its manifest in your browser localStorage. Real file-based project save/load comes later.
+                </p>
+              </div>
             </div>
 
             {/* Future Bridge Panel */}

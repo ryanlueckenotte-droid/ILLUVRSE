@@ -124,6 +124,18 @@ Connect existing creative modules into a single episode manifest.
 - Features: Episode manifest that connects character, scene, script, storyboard, timeline, asset, and export IDs into one portable project bundle. Includes a visual pipeline view and manifest editor.
 - JSON Format: Includes `version`, `id`, `title`, `series`, `episodeTitle`, `status`, `modules` (map of module IDs), `pipeline` array (step, route, status, summary), `nextActions`, and `productionNotes`.
 
+### Local Save/Load v1
+
+ILLUVRSE now supports browser-local persistence for all Studio modules.
+
+**Status: v1 Implemented**
+- Features: Save Locally, Load Saved, and Clear buttons added to all 8 core builders.
+- Implementation: Uses a safe browser `localStorage` helper (`lib/localStudioStorage.ts`) with Next.js client-side only loading to prevent hydration issues.
+- Dashboards:
+  - Studio Dashboard (`/studio`): Displays "Saved" or "Not saved" badges for each module to show persistence status.
+  - Project Bundle (`/studio/project`): Informs users that their manifest is stored in browser-local storage.
+- Note: This is not filesystem persistence yet. Future versions will support local project folder save/load.
+
 ### Studio Quick Launch + Module Linking v1
 
 The Studio dashboard now acts as the command center for the full local-first episode pipeline. The Project Bundle links all module routes together, providing a unified creative experience.
