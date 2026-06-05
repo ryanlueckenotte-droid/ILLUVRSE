@@ -70,19 +70,28 @@ Define character cards, model sheets, poses, expressions, and reusable rig parts
 - Features: Defines the first reusable character card format with identity, personality, visual style, expressions, poses, voice, and story function.
 - JSON Format: Includes `version`, `id`, `name`, `role`, `species`, `personality` array, `visual` properties (colors, style, silhouette), `expressions` array, `poses` array, `voice` (tone, catchphrase), `storyFunction`, and `notes`.
 
-### Phase 5: Timeline Animation
+### Phase 5: Script Builder
+
+Define episode scripts, story beats, dialogue, and production notes.
+
+**Status: v1 Implemented**
+- Location: `/studio/scripts`
+- Features: Editable script properties, characters list, multi-scene beats, structured dialogue, and JSON export.
+- JSON Format: Includes `version`, `id`, `title`, `series`, `format`, `logline`, `theme`, `characters` array, `scenes` array (with `beats`), `dialogue` array (speaker, emotion, line), and `productionNotes` array.
+
+### Phase 6: Timeline Animation
 
 Add keyframes, easing, timing, layers, playback, and frame inspection.
 
-### Phase 6: Prompt-to-Storyboard
+### Phase 7: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
 
-### Phase 7: Prompt-to-Animated-Short
+### Phase 8: Prompt-to-Animated-Short
 
 Generate a short sequence from prompt to storyboard to animated canvas playback.
 
-### Phase 8: Prompt-to-TV-Show Episode Engine
+### Phase 9: Prompt-to-TV-Show Episode Engine
 
 Assemble scripts, recurring characters, scenes, animation timelines, voice planning, export workflow, and review loops into a full local episode engine.
 
