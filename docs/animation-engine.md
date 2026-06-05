@@ -97,15 +97,24 @@ Add keyframes, easing, timing, layers, playback, and frame inspection.
 - Features: Visual timeline tracks, percentage-based item blocks, temporal planning, selected item editor, and live JSON export.
 - JSON Format: Includes `version`, `id`, `storyboardId`, `title`, `fps`, `durationSeconds`, `tracks` array (camera, character, dialogue, effects) with `items` (start, duration, label, action, panelId), and `productionNotes` array.
 
-### Phase 8: Prompt-to-Storyboard
+### Phase 8: Assets Library
+
+Define reusable creative assets, paths, and relationships.
+
+**Status: v1 Implemented**
+- Location: `/studio/assets`
+- Features: Reusable asset reference format with names, types, statuses, tags, styles, paths, linked objects, and production notes.
+- JSON Format: Includes `version`, `id`, `title`, `project`, `assets` array (with `name`, `type`, `status`, `description`, `tags`, `style`, `path`, `linkedTo`), and `productionNotes` array.
+
+### Phase 9: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
 
-### Phase 9: Prompt-to-Animated-Short
+### Phase 10: Prompt-to-Animated-Short
 
 Generate a short sequence from prompt to storyboard to animated canvas playback.
 
-### Phase 10: Prompt-to-TV-Show Episode Engine
+### Phase 11: Prompt-to-TV-Show Episode Engine
 
 Assemble scripts, recurring characters, scenes, animation timelines, voice planning, export workflow, and review loops into a full local episode engine.
 
