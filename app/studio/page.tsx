@@ -38,7 +38,7 @@ const studioSections = [
   { label: "Scenes", icon: Film, href: "/studio/scenes" },
   { label: "Timeline", icon: Layers, href: "/studio/timeline" },
   { label: "Assets", icon: Archive, href: "/studio/assets" },
-  { label: "Exports", icon: Download, comingSoon: true },
+  { label: "Exports", icon: Download, href: "/studio/exports" },
   { label: "Canvas Lab", icon: FlaskConical, href: "/lab/canvas" }
 ];
 

@@ -106,15 +106,24 @@ Define reusable creative assets, paths, and relationships.
 - Features: Reusable asset reference format with names, types, statuses, tags, styles, paths, linked objects, and production notes.
 - JSON Format: Includes `version`, `id`, `title`, `project`, `assets` array (with `name`, `type`, `status`, `description`, `tags`, `style`, `path`, `linkedTo`), and `productionNotes` array.
 
-### Phase 9: Prompt-to-Storyboard
+### Phase 9: Export Planner
+
+Package and publishing plan for multi-platform distribution.
+
+**Status: v1 Implemented**
+- Location: `/studio/exports`
+- Features: Export target grid, multi-platform metadata, package options, and production/publishing notes.
+- JSON Format: Includes `version`, `id`, `project`, `episodeTitle`, `sourceRefs`, `targets` array (platform, format, resolution, etc.), `package` options, and notes arrays.
+
+### Phase 10: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
 
-### Phase 10: Prompt-to-Animated-Short
+### Phase 11: Prompt-to-Animated-Short
 
 Generate a short sequence from prompt to storyboard to animated canvas playback.
 
-### Phase 11: Prompt-to-TV-Show Episode Engine
+### Phase 12: Prompt-to-TV-Show Episode Engine
 
 Assemble scripts, recurring characters, scenes, animation timelines, voice planning, export workflow, and review loops into a full local episode engine.
 
