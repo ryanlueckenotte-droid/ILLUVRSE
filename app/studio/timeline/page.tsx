@@ -26,121 +26,8 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
-
-const DEFAULT_TIMELINE = {
-  "version": 1,
-  "id": "timeline-episode-001",
-  "storyboardId": "storyboard-episode-001",
-  "title": "Otter Core Awakens Timeline",
-  "fps": 24,
-  "durationSeconds": 20,
-  "tracks": [
-    {
-      "id": "track-camera",
-      "name": "Camera",
-      "type": "camera",
-      "items": [
-        {
-          "id": "cam-001",
-          "panelId": "panel-001",
-          "start": 0,
-          "duration": 4,
-          "label": "Slow push in",
-          "action": "camera slow push toward purple core"
-        },
-        {
-          "id": "cam-002",
-          "panelId": "panel-002",
-          "start": 4,
-          "duration": 5,
-          "label": "Quick pan",
-          "action": "camera pans across glitch bugs"
-        }
-      ]
-    },
-    {
-      "id": "track-character",
-      "name": "Character Motion",
-      "type": "character",
-      "items": [
-        {
-          "id": "char-001",
-          "panelId": "panel-001",
-          "start": 1,
-          "duration": 3,
-          "label": "Otter awakens",
-          "action": "otter eyes open and body rises"
-        },
-        {
-          "id": "char-002",
-          "panelId": "panel-004",
-          "start": 15,
-          "duration": 5,
-          "label": "Otter points to spark",
-          "action": "otter points toward forming world"
-        }
-      ]
-    },
-    {
-      "id": "track-dialogue",
-      "name": "Dialogue",
-      "type": "dialogue",
-      "items": [
-        {
-          "id": "dialogue-001",
-          "panelId": "panel-001",
-          "start": 1,
-          "duration": 2.5,
-          "label": "System awake",
-          "action": "The Otter: System awake. Imagination detected."
-        },
-        {
-          "id": "dialogue-002",
-          "panelId": "panel-003",
-          "start": 11,
-          "duration": 2.5,
-          "label": "Can we build this?",
-          "action": "Ryan: Can we actually build this?"
-        },
-        {
-          "id": "dialogue-003",
-          "panelId": "panel-004",
-          "start": 16,
-          "duration": 3,
-          "label": "One spark at a time",
-          "action": "The Otter: Yes. One world spark at a time."
-        }
-      ]
-    },
-    {
-      "id": "track-effects",
-      "name": "Effects",
-      "type": "effects",
-      "items": [
-        {
-          "id": "fx-001",
-          "panelId": "panel-001",
-          "start": 0,
-          "duration": 4,
-          "label": "Core glow",
-          "action": "purple core pulses brighter"
-        },
-        {
-          "id": "fx-002",
-          "panelId": "panel-004",
-          "start": 15,
-          "duration": 5,
-          "label": "World Spark expands",
-          "action": "green spark expands into tiny glowing world"
-        }
-      ]
-    }
-  ],
-  "productionNotes": [
-    "Timeline items should later compile into animation keyframes.",
-    "Keep v1 focused on timing, tracks, and readable export JSON."
-  ]
-};
+import { Timeline } from "@/lib/studioTypes";
+import { DEFAULT_TIMELINE } from "@/lib/studioDefaults";
 
 const TRACK_CONFIG = {
   camera: { color: "violet", icon: Video, bg: "bg-violet-500/10", border: "border-violet-500/30", text: "text-violet-300" },
@@ -150,7 +37,7 @@ const TRACK_CONFIG = {
 };
 
 export default function TimelinePlannerPage() {
-  const [timeline, setTimeline] = useState(DEFAULT_TIMELINE);
+  const [timeline, setTimeline] = useState<Timeline>(DEFAULT_TIMELINE);
   const [selectedItemId, setSelectedItemId] = useState<string | null>("cam-001");
   const [copied, setCopied] = useState(false);
   const [rawProductionNotes, setRawProductionNotes] = useState("");
@@ -158,7 +45,7 @@ export default function TimelinePlannerPage() {
 
   // Initial load
   useEffect(() => {
-    const saved = loadStudioJson<typeof DEFAULT_TIMELINE | null>(STORAGE_KEYS.TIMELINE, null);
+    const saved = loadStudioJson<Timeline | null>(STORAGE_KEYS.TIMELINE, null);
     if (saved) {
       setTimeline(saved);
       setRawProductionNotes(saved.productionNotes.join("\n"));
@@ -176,7 +63,7 @@ export default function TimelinePlannerPage() {
   };
 
   const loadSaved = () => {
-    const saved = loadStudioJson<typeof DEFAULT_TIMELINE | null>(STORAGE_KEYS.TIMELINE, null);
+    const saved = loadStudioJson<Timeline | null>(STORAGE_KEYS.TIMELINE, null);
     if (saved) {
       setTimeline(saved);
       setRawProductionNotes(saved.productionNotes.join("\n"));

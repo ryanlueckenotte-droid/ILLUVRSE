@@ -23,69 +23,11 @@ import {
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
-
-const DEFAULT_SCRIPT = {
-  version: 1,
-  id: "episode-001",
-  title: "Otter Core Awakens",
-  series: "ILLUVRSE Core",
-  format: "1-3 minute animated short",
-  logline: "A futuristic otter AI wakes up inside a forgotten digital universe and helps Ryan turn a spark of imagination into the first world.",
-  theme: "Imagination becomes real when you start building.",
-  characters: [
-    "The Otter",
-    "Ryan",
-    "World Spark",
-    "Glitches",
-    "The Void"
-  ],
-  scenes: [
-    {
-      id: "scene-001",
-      title: "Forgotten Digital Universe",
-      summary: "The Otter wakes up in a dark cosmic grid surrounded by broken project fragments.",
-      beats: [
-        "A purple core flickers awake.",
-        "The Otter opens its eyes.",
-        "Glitches scatter across the grid."
-      ]
-    },
-    {
-      id: "scene-002",
-      title: "Ryan Finds the Spark",
-      summary: "Ryan notices a small World Spark and decides to build instead of overthinking.",
-      beats: [
-        "Ryan hesitates at the edge of the void.",
-        "The Otter points at the World Spark.",
-        "The spark expands into a tiny world."
-      ]
-    }
-  ],
-  dialogue: [
-    {
-      speaker: "The Otter",
-      line: "System awake. Imagination detected.",
-      emotion: "curious"
-    },
-    {
-      speaker: "Ryan",
-      line: "Can we actually build this?",
-      emotion: "uncertain"
-    },
-    {
-      speaker: "The Otter",
-      line: "Yes. One world spark at a time.",
-      emotion: "confident"
-    }
-  ],
-  productionNotes: [
-    "Keep the tone funny, motivational, weird, and futuristic.",
-    "This script should later connect to Scene Builder and Storyboard Builder."
-  ]
-};
+import { Script } from "@/lib/studioTypes";
+import { DEFAULT_SCRIPT } from "@/lib/studioDefaults";
 
 export default function ScriptBuilderPage() {
-  const [script, setScript] = useState(DEFAULT_SCRIPT);
+  const [script, setScript] = useState<Script>(DEFAULT_SCRIPT);
   const [copied, setCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
@@ -133,7 +75,7 @@ export default function ScriptBuilderPage() {
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
-  const syncRawStates = (s: typeof DEFAULT_SCRIPT) => {
+  const syncRawStates = (s: Script) => {
     setRawCharacters(s.characters.join("\n"));
     setRawBeats1(s.scenes[0].beats.join("\n"));
     setRawBeats2(s.scenes[1].beats.join("\n"));
