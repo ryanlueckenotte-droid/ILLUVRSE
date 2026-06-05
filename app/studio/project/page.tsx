@@ -12,10 +12,30 @@ import {
   AlertTriangle,
   ExternalLink,
   Type,
-  FileText
+  FileText,
+  Users,
+  Film,
+  Image as ImageIcon,
+  Layers,
+  Archive,
+  Download,
+  FlaskConical
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { STUDIO_MODULES } from "@/lib/studioModules";
+
+const iconMap: Record<string, any> = {
+  project: Package,
+  characters: Users,
+  scripts: FileText,
+  storyboards: ImageIcon,
+  scenes: Film,
+  timeline: Layers,
+  assets: Archive,
+  exports: Download,
+  canvas: FlaskConical
+};
 
 const DEFAULT_PROJECT_BUNDLE = {
   version: 1,
@@ -206,29 +226,44 @@ export default function ProjectBundlePage() {
             </div>
           </section>
 
-          {/* Pipeline View */}
+          {/* Linked Modules View */}
           <section>
-            <h3 className="mb-6 text-sm font-medium uppercase tracking-wider text-slate-400">Creative Pipeline</h3>
+            <h3 className="mb-6 text-sm font-medium uppercase tracking-wider text-slate-400">Open Linked Modules</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              {bundle.pipeline.map((step) => (
-                <Link key={step.step} href={step.route}>
-                  <div className="group flex h-full flex-col justify-between rounded-xl border border-white/10 bg-white/[0.05] p-5 hover:bg-white/[0.08] hover:shadow-glow transition-all">
-                    <div>
-                      <div className="mb-3 flex items-center justify-between">
-                        <h4 className="font-bold text-white group-hover:text-violet-300 transition-colors">{step.step}</h4>
-                        <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${getStatusColor(step.status)}`}>
-                          {step.status}
-                        </span>
+              {STUDIO_MODULES.filter(m => !m.comingSoon && m.key !== "project").map((module) => {
+                const Icon = iconMap[module.key] || Package;
+                const linkedId = module.linkId ? (bundle.modules as any)[module.linkId] : null;
+
+                return (
+                  <Link key={module.key} href={module.route}>
+                    <div className="group flex h-full flex-col justify-between rounded-xl border border-white/10 bg-white/[0.05] p-5 hover:bg-white/[0.08] hover:shadow-glow transition-all">
+                      <div>
+                        <div className="mb-3 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                             <div className="rounded-lg bg-violet-500/10 p-1.5 text-violet-300 group-hover:bg-violet-500/20 transition-colors">
+                               <Icon className="h-4 w-4" />
+                             </div>
+                             <h4 className="font-bold text-white group-hover:text-violet-300 transition-colors">{module.title}</h4>
+                          </div>
+                          <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${getStatusColor("ready")}`}>
+                            ready
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed mb-2">{module.purpose}</p>
+                        {linkedId && (
+                           <div className="mb-4 inline-flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-1 text-[10px] font-mono text-violet-300">
+                             <span className="text-slate-500">ID:</span> {linkedId}
+                           </div>
+                        )}
                       </div>
-                      <p className="text-xs text-slate-400 leading-relaxed mb-4">{step.summary}</p>
+                      <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
+                        <ExternalLink className="h-3 w-3" />
+                        {module.route}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
-                      <ExternalLink className="h-3 w-3" />
-                      {step.route}
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </section>
         </div>
