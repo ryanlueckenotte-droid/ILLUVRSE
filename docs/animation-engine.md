@@ -14,6 +14,17 @@ Prompt
   -> Export animated episode
 ```
 
+## Studio Dashboard
+
+The Studio Dashboard (`/studio`) serves as the central creative hub for ILLUVRSE. It provides a visual overview of the entire creative pipeline and connects various specialized modules:
+
+- **Chief of Staff:** Directing the creative process through prompt-driven workflows.
+- **Canvas Lab:** Testing and interacting with the Drawing Command System.
+- **Future Modules:** Integrated access to Scene Builder, Character Builder, Timeline Animation, Asset Management, and Export workflows.
+- **Business Engine:** Linking creative output to digital business operations.
+
+Studio is where the transition from a "chatbot" to a "creative operating system" becomes visible, mapping out the journey from a single prompt to a fully realized animated world.
+
 ## Current Next Step: Drawing Command System
 
 ILLUVRSE now supports a command-driven drawing system. This is the bridge between AI prompts and animation.
