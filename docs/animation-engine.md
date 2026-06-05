@@ -65,6 +65,11 @@ Create a structured scene format with backgrounds, props, characters, camera fra
 
 Define character cards, model sheets, poses, expressions, and reusable rig parts.
 
+**Status: v1 Implemented**
+- Location: `/studio/characters`
+- Features: Defines the first reusable character card format with identity, personality, visual style, expressions, poses, voice, and story function.
+- JSON Format: Includes `version`, `id`, `name`, `role`, `species`, `personality` array, `visual` properties (colors, style, silhouette), `expressions` array, `poses` array, `voice` (tone, catchphrase), `storyFunction`, and `notes`.
+
 ### Phase 5: Timeline Animation
 
 Add keyframes, easing, timing, layers, playback, and frame inspection.
