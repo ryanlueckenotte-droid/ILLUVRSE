@@ -115,15 +115,24 @@ Package and publishing plan for multi-platform distribution.
 - Features: Export target grid, multi-platform metadata, package options, and production/publishing notes.
 - JSON Format: Includes `version`, `id`, `project`, `episodeTitle`, `sourceRefs`, `targets` array (platform, format, resolution, etc.), `package` options, and notes arrays.
 
-### Phase 10: Prompt-to-Storyboard
+### Phase 10: Project Bundle
+
+Connect existing creative modules into a single episode manifest.
+
+**Status: v1 Implemented**
+- Location: `/studio/project`
+- Features: Episode manifest that connects character, scene, script, storyboard, timeline, asset, and export IDs into one portable project bundle. Includes a visual pipeline view and manifest editor.
+- JSON Format: Includes `version`, `id`, `title`, `series`, `episodeTitle`, `status`, `modules` (map of module IDs), `pipeline` array (step, route, status, summary), `nextActions`, and `productionNotes`.
+
+### Phase 11: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
 
-### Phase 11: Prompt-to-Animated-Short
+### Phase 12: Prompt-to-Animated-Short
 
 Generate a short sequence from prompt to storyboard to animated canvas playback.
 
-### Phase 12: Prompt-to-TV-Show Episode Engine
+### Phase 13: Prompt-to-TV-Show Episode Engine
 
 Assemble scripts, recurring characters, scenes, animation timelines, voice planning, export workflow, and review loops into a full local episode engine.
 
