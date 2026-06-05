@@ -56,6 +56,11 @@ Build drawing controls for primitives, paths, layers, colors, and reusable asset
 
 Create a structured scene format with backgrounds, props, characters, camera framing, and shot metadata.
 
+**Status: v1 Implemented**
+- Location: `/studio/scenes`
+- Features: Editable scene properties, background mood, camera framing, character/prop metadata, and JSON export.
+- JSON Format: Defines `background` (gradient + mood), `camera` (shot, angle, movement), `characters` array, `props` array, and production `notes`.
+
 ### Phase 4: Character Builder
 
 Define character cards, model sheets, poses, expressions, and reusable rig parts.

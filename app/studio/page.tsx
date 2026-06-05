@@ -35,7 +35,7 @@ const studioSections = [
   { label: "Characters", icon: Users, comingSoon: true },
   { label: "Scripts", icon: FileText, comingSoon: true },
   { label: "Storyboards", icon: ImageIcon, comingSoon: true },
-  { label: "Scenes", icon: Film, comingSoon: true },
+  { label: "Scenes", icon: Film, href: "/studio/scenes" },
   { label: "Timeline", icon: Layers, comingSoon: true },
   { label: "Assets", icon: Archive, comingSoon: true },
   { label: "Exports", icon: Download, comingSoon: true },
