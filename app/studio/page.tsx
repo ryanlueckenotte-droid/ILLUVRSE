@@ -15,10 +15,12 @@ import {
   FlaskConical,
   Sparkles,
   Zap,
-  Package
+  Package,
+  ExternalLink
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { STUDIO_MODULES } from "@/lib/studioModules";
 
 const pipelineSteps = [
   "Prompt",
@@ -31,17 +33,18 @@ const pipelineSteps = [
   "Export"
 ];
 
-const studioSections = [
-  { label: "Worlds", icon: Globe, comingSoon: true },
-  { label: "Characters", icon: Users, href: "/studio/characters" },
-  { label: "Scripts", icon: FileText, href: "/studio/scripts" },
-  { label: "Storyboards", icon: ImageIcon, href: "/studio/storyboards" },
-  { label: "Scenes", icon: Film, href: "/studio/scenes" },
-  { label: "Timeline", icon: Layers, href: "/studio/timeline" },
-  { label: "Assets", icon: Archive, href: "/studio/assets" },
-  { label: "Exports", icon: Download, href: "/studio/exports" },
-  { label: "Canvas Lab", icon: FlaskConical, href: "/lab/canvas" }
-];
+const iconMap: Record<string, any> = {
+  project: Package,
+  characters: Users,
+  scripts: FileText,
+  storyboards: ImageIcon,
+  scenes: Film,
+  timeline: Layers,
+  assets: Archive,
+  exports: Download,
+  canvas: FlaskConical,
+  worlds: Globe
+};
 
 const engineStatus = [
   { label: "Chief of Staff", status: "Active" },
@@ -72,6 +75,81 @@ export default function StudioPage() {
           </div>
           <div className="absolute -right-8 -top-8 h-64 w-64 rounded-full bg-violet/10 blur-3xl" />
         </section>
+
+        {/* Current Episode & Quick Launch */}
+        <div className="grid gap-8 lg:grid-cols-12">
+          {/* Current Episode Panel */}
+          <div className="lg:col-span-4 h-full">
+            <section className="h-full rounded-xl border border-violet-500/30 bg-violet-500/5 p-6 shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                   <div className="flex items-center gap-2 text-violet-300">
+                    <Clapperboard className="h-5 w-5" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Current Episode</span>
+                  </div>
+                  <span className="rounded-full bg-violet-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-violet-300">
+                    planning
+                  </span>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-2xl font-black text-white">Otter Core Awakens</h3>
+                    <p className="text-sm text-slate-400">Series: ILLUVRSE Core</p>
+                  </div>
+                  <div className="space-y-2 text-xs text-slate-300">
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-500">Bundle ID</span>
+                      <span className="font-mono">project-illuvrse-core-episode-001</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-500">Main Character</span>
+                      <span>The Otter</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-1">
+                      <span className="text-slate-500">Runtime Target</span>
+                      <span>1-3 minute animated short</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="/studio/project"
+                className="mt-6 flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-violet-500"
+              >
+                Open Episode Bundle <ExternalLink className="h-4 w-4" />
+              </Link>
+            </section>
+          </div>
+
+          {/* Quick Launch Section */}
+          <div className="lg:col-span-8">
+            <section className="rounded-xl border border-white/10 bg-white/[0.03] p-6 h-full">
+              <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-slate-400">Quick Launch</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {STUDIO_MODULES.filter(m => !m.comingSoon).map((module) => {
+                  const Icon = iconMap[module.key] || Package;
+                  return (
+                    <Link key={module.key} href={module.route}>
+                      <div className="group flex flex-col items-center justify-center rounded-xl border border-white/5 bg-white/5 p-4 text-center transition hover:border-violet-500/50 hover:bg-violet-500/10 hover:shadow-glow">
+                        <div className="mb-2 rounded-lg bg-white/5 p-2 text-violet-300 transition group-hover:bg-violet-500/20">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <span className="text-xs font-bold text-white">{module.title}</span>
+                        <p className="mt-1 text-[10px] text-slate-500 line-clamp-1 group-hover:text-slate-400 transition-colors">
+                          {module.description}
+                        </p>
+                        <div className="mt-3 flex items-center justify-between w-full border-t border-white/5 pt-2">
+                           <span className="text-[9px] font-bold uppercase tracking-tighter text-mint">{module.status}</span>
+                           <span className="text-[8px] font-mono text-slate-600 group-hover:text-violet-400/50 transition-colors">{module.route}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        </div>
 
         {/* Pipeline Section */}
         <section className="rounded-xl border border-white/10 bg-white/[0.03] p-6">
@@ -119,32 +197,33 @@ export default function StudioPage() {
 
         {/* Card Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {studioSections.map((section) => {
-            const Icon = section.icon;
+          {STUDIO_MODULES.map((module) => {
+            const Icon = iconMap[module.key] || Package;
             const Content = (
               <div
                 className={`group relative flex h-40 flex-col justify-between rounded-xl border border-white/10 p-6 transition ${
-                  section.comingSoon
+                  module.comingSoon
                     ? "bg-white/[0.02] opacity-80"
                     : "bg-white/[0.05] hover:bg-white/[0.08] hover:shadow-glow"
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <div className={`rounded-lg p-2 ${section.comingSoon ? "bg-slate-800 text-slate-500" : "bg-violet/20 text-violet-300"}`}>
+                  <div className={`rounded-lg p-2 ${module.comingSoon ? "bg-slate-800 text-slate-500" : "bg-violet/20 text-violet-300"}`}>
                     <Icon className="h-6 w-6" />
                   </div>
-                  {section.comingSoon && (
+                  {module.comingSoon && (
                     <span className="rounded-full bg-white/5 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                       Coming soon
                     </span>
                   )}
                 </div>
                 <div>
-                  <h4 className={`text-lg font-semibold ${section.comingSoon ? "text-slate-400" : "text-white"}`}>
-                    {section.label}
+                  <h4 className={`text-lg font-semibold ${module.comingSoon ? "text-slate-400" : "text-white"}`}>
+                    {module.title}
                   </h4>
-                  {!section.comingSoon && (
-                    <div className="mt-1 flex items-center text-xs text-violet-400 opacity-0 transition-opacity group-hover:opacity-100">
+                  <p className="mt-1 text-xs text-slate-400 line-clamp-1">{module.description}</p>
+                  {!module.comingSoon && (
+                    <div className="mt-2 flex items-center text-xs text-violet-400 opacity-0 transition-opacity group-hover:opacity-100">
                       Open module <ArrowRight className="ml-1 h-3 w-3" />
                     </div>
                   )}
@@ -152,15 +231,15 @@ export default function StudioPage() {
               </div>
             );
 
-            if (section.href) {
+            if (!module.comingSoon) {
               return (
-                <Link key={section.label} href={section.href}>
+                <Link key={module.key} href={module.route}>
                   {Content}
                 </Link>
               );
             }
 
-            return <div key={section.label}>{Content}</div>;
+            return <div key={module.key}>{Content}</div>;
           })}
         </div>
 

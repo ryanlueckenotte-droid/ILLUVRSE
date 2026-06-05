@@ -124,6 +124,14 @@ Connect existing creative modules into a single episode manifest.
 - Features: Episode manifest that connects character, scene, script, storyboard, timeline, asset, and export IDs into one portable project bundle. Includes a visual pipeline view and manifest editor.
 - JSON Format: Includes `version`, `id`, `title`, `series`, `episodeTitle`, `status`, `modules` (map of module IDs), `pipeline` array (step, route, status, summary), `nextActions`, and `productionNotes`.
 
+### Studio Quick Launch + Module Linking v1
+
+The Studio dashboard now acts as the command center for the full local-first episode pipeline. The Project Bundle links all module routes together, providing a unified creative experience.
+
+- **Quick Launch:** Direct access to all active modules from the Studio dashboard.
+- **Current Episode:** A dedicated panel on the dashboard showing the status and metadata of the active project bundle.
+- **Integrated Navigation:** Enhanced module linking within the Project Bundle manifest, allowing creators to jump between specialized builders while maintaining project context.
+
 ### Phase 11: Prompt-to-Storyboard
 
 Convert a prompt into story beats, panels, scenes, and shot lists.
