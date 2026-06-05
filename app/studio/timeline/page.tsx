@@ -18,10 +18,14 @@ import {
   User,
   MessageSquare,
   Zap,
-  Activity
+  Activity,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 const DEFAULT_TIMELINE = {
   "version": 1,
@@ -150,10 +154,44 @@ export default function TimelinePlannerPage() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>("cam-001");
   const [copied, setCopied] = useState(false);
   const [rawProductionNotes, setRawProductionNotes] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
+  // Initial load
   useEffect(() => {
-    setRawProductionNotes(timeline.productionNotes.join("\n"));
-  }, [timeline.id]);
+    const saved = loadStudioJson<typeof DEFAULT_TIMELINE | null>(STORAGE_KEYS.TIMELINE, null);
+    if (saved) {
+      setTimeline(saved);
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    } else {
+      setRawProductionNotes(DEFAULT_TIMELINE.productionNotes.join("\n"));
+    }
+  }, []);
+
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.TIMELINE, timeline);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson<typeof DEFAULT_TIMELINE | null>(STORAGE_KEYS.TIMELINE, null);
+    if (saved) {
+      setTimeline(saved);
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.TIMELINE);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(timeline, null, 2));
@@ -166,6 +204,8 @@ export default function TimelinePlannerPage() {
       setTimeline(DEFAULT_TIMELINE);
       setSelectedItemId("cam-001");
       setRawProductionNotes(DEFAULT_TIMELINE.productionNotes.join("\n"));
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -314,25 +354,57 @@ export default function TimelinePlannerPage() {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={resetTimeline}
               className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Timeline
+              Reset
             </button>
             <button
               onClick={() => {
                 setTimeline(DEFAULT_TIMELINE);
                 setSelectedItemId("cam-001");
                 setRawProductionNotes(DEFAULT_TIMELINE.productionNotes.join("\n"));
+                setStatusMessage("Loaded Core Timeline");
+                setTimeout(() => setStatusMessage(""), 3000);
               }}
               className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
             >
               <Layers className="h-4 w-4" />
-              Load Otter Timeline
+              Load Core
             </button>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+            <button
+              onClick={saveLocally}
+              className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+            >
+              <Save className="h-4 w-4" />
+              Save Locally
+            </button>
+            <button
+              onClick={loadSaved}
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+            >
+              <FolderOpen className="h-4 w-4" />
+              Load Saved
+            </button>
+            <button
+              onClick={clearSaved}
+              className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
+
+            {statusMessage && (
+              <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                {statusMessage}
+              </span>
+            )}
           </div>
         </div>
 

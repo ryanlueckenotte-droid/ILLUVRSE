@@ -20,7 +20,9 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { useState, useEffect } from "react";
 import { STUDIO_MODULES } from "@/lib/studioModules";
+import { STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 const pipelineSteps = [
   "Prompt",
@@ -58,6 +60,28 @@ const engineStatus = [
 ];
 
 export default function StudioPage() {
+  const [saveStatus, setSaveStatus] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const status: Record<string, boolean> = {};
+    const keys = [
+      { id: "project", key: STORAGE_KEYS.PROJECT },
+      { id: "characters", key: STORAGE_KEYS.CHARACTER },
+      { id: "scenes", key: STORAGE_KEYS.SCENE },
+      { id: "scripts", key: STORAGE_KEYS.SCRIPT },
+      { id: "storyboards", key: STORAGE_KEYS.STORYBOARD },
+      { id: "timeline", key: STORAGE_KEYS.TIMELINE },
+      { id: "assets", key: STORAGE_KEYS.ASSETS },
+      { id: "exports", key: STORAGE_KEYS.EXPORT_PLAN },
+    ];
+
+    keys.forEach(({ id, key }) => {
+      status[id] = !!window.localStorage.getItem(key);
+    });
+
+    setSaveStatus(status);
+  }, []);
+
   return (
     <AppShell>
       <SectionHeader title="ILLUVRSE Studio" eyebrow="Universe builder" />
@@ -124,13 +148,27 @@ export default function StudioPage() {
           {/* Quick Launch Section */}
           <div className="lg:col-span-8">
             <section className="rounded-xl border border-white/10 bg-white/[0.03] p-6 h-full">
-              <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-slate-400">Quick Launch</h3>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400">Quick Launch</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Local Save Status</span>
+                <div className="h-1.5 w-1.5 rounded-full bg-violet-500 shadow-glow animate-pulse" />
+              </div>
+            </div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {STUDIO_MODULES.filter(m => !m.comingSoon).map((module) => {
                   const Icon = iconMap[module.key] || Package;
+                const isSaved = saveStatus[module.key];
+
                   return (
                     <Link key={module.key} href={module.route}>
-                      <div className="group flex flex-col items-center justify-center rounded-xl border border-white/5 bg-white/5 p-4 text-center transition hover:border-violet-500/50 hover:bg-violet-500/10 hover:shadow-glow">
+                    <div className="group relative flex flex-col items-center justify-center rounded-xl border border-white/5 bg-white/5 p-4 text-center transition hover:border-violet-500/50 hover:bg-violet-500/10 hover:shadow-glow">
+                      {isSaved && (
+                        <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-mint/10 border border-mint/20 px-1.5 py-0.5 text-[8px] font-bold uppercase text-mint shadow-glow-sm">
+                          Saved
+                        </div>
+                      )}
+
                         <div className="mb-2 rounded-lg bg-white/5 p-2 text-violet-300 transition group-hover:bg-violet-500/20">
                           <Icon className="h-5 w-5" />
                         </div>
@@ -199,6 +237,8 @@ export default function StudioPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {STUDIO_MODULES.map((module) => {
             const Icon = iconMap[module.key] || Package;
+            const isSaved = saveStatus[module.key];
+
             const Content = (
               <div
                 className={`group relative flex h-40 flex-col justify-between rounded-xl border border-white/10 p-6 transition ${
@@ -211,11 +251,22 @@ export default function StudioPage() {
                   <div className={`rounded-lg p-2 ${module.comingSoon ? "bg-slate-800 text-slate-500" : "bg-violet/20 text-violet-300"}`}>
                     <Icon className="h-6 w-6" />
                   </div>
-                  {module.comingSoon && (
-                    <span className="rounded-full bg-white/5 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                      Coming soon
-                    </span>
-                  )}
+
+                  <div className="flex flex-col items-end gap-2">
+                    {module.comingSoon && (
+                      <span className="rounded-full bg-white/5 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                        Coming soon
+                      </span>
+                    )}
+
+                    {!module.comingSoon && (
+                       <span className={`rounded-full border px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest ${
+                         isSaved ? "border-mint/30 bg-mint/10 text-mint" : "border-white/5 bg-white/5 text-slate-600"
+                       }`}>
+                         {isSaved ? "Saved" : "Not saved"}
+                       </span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <h4 className={`text-lg font-semibold ${module.comingSoon ? "text-slate-400" : "text-white"}`}>

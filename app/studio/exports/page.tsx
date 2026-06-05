@@ -20,10 +20,14 @@ import {
   Monitor,
   Youtube,
   Smartphone,
-  Image as ImageIcon
+  ImageIcon,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 type ExportFormat = "mp4" | "gif" | "webm" | "png-sequence" | "json-bundle";
 type ExportStatus = "planned" | "draft" | "ready" | "exported" | "archived";
@@ -139,6 +143,7 @@ export default function ExportPlannerPage() {
   const [plan, setPlan] = useState<ExportPlan>(DEFAULT_PLAN);
   const [selectedTargetId, setSelectedTargetId] = useState<string>(DEFAULT_PLAN.targets[0].id);
   const [copied, setCopied] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   // Raw text states for textareas
   const [rawPublishingNotes, setRawPublishingNotes] = useState(DEFAULT_PLAN.publishingNotes.join("\n"));
@@ -146,11 +151,45 @@ export default function ExportPlannerPage() {
 
   const selectedTarget = plan.targets.find(t => t.id === selectedTargetId) || plan.targets[0];
 
-  // Sync raw states when plan resets
+  // Sync raw states when plan resets and initial load
   useEffect(() => {
-    setRawPublishingNotes(plan.publishingNotes.join("\n"));
-    setRawProductionNotes(plan.productionNotes.join("\n"));
-  }, [plan.publishingNotes, plan.productionNotes]);
+    const saved = loadStudioJson<ExportPlan | null>(STORAGE_KEYS.EXPORT_PLAN, null);
+    if (saved) {
+      setPlan(saved);
+      setRawPublishingNotes(saved.publishingNotes.join("\n"));
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    } else {
+      setRawPublishingNotes(plan.publishingNotes.join("\n"));
+      setRawProductionNotes(plan.productionNotes.join("\n"));
+    }
+  }, []);
+
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.EXPORT_PLAN, plan);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson<ExportPlan | null>(STORAGE_KEYS.EXPORT_PLAN, null);
+    if (saved) {
+      setPlan(saved);
+      setRawPublishingNotes(saved.publishingNotes.join("\n"));
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.EXPORT_PLAN);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(plan, null, 2));
@@ -162,6 +201,8 @@ export default function ExportPlannerPage() {
     if (confirm("Reset to default export plan?")) {
       setPlan(DEFAULT_PLAN);
       setSelectedTargetId(DEFAULT_PLAN.targets[0].id);
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -328,21 +369,55 @@ export default function ExportPlannerPage() {
             ))}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={resetPlan}
               className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Export Plan
+              Reset
             </button>
             <button
-              onClick={loadOtterPlan}
+              onClick={() => {
+                loadOtterPlan();
+                setStatusMessage("Loaded Core Plan");
+                setTimeout(() => setStatusMessage(""), 3000);
+              }}
               className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
             >
               <Package className="h-4 w-4" />
-              Load Otter Export Plan
+              Load Core
             </button>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+            <button
+              onClick={saveLocally}
+              className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+            >
+              <Save className="h-4 w-4" />
+              Save Locally
+            </button>
+            <button
+              onClick={loadSaved}
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+            >
+              <FolderOpen className="h-4 w-4" />
+              Load Saved
+            </button>
+            <button
+              onClick={clearSaved}
+              className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
+
+            {statusMessage && (
+              <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                {statusMessage}
+              </span>
+            )}
           </div>
 
           {/* Warning/Info Panel */}

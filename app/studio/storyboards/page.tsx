@@ -18,10 +18,14 @@ import {
   Type,
   AlignLeft,
   Info,
-  ScrollText
+  ScrollText,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 const DEFAULT_STORYBOARD = {
   version: 1,
@@ -94,6 +98,7 @@ export default function StoryboardBuilderPage() {
   const [storyboard, setStoryboard] = useState(DEFAULT_STORYBOARD);
   const [selectedPanelId, setSelectedPanelId] = useState("panel-001");
   const [copied, setCopied] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   // Raw text states for textareas to allow natural typing
   const [rawCharacters, setRawCharacters] = useState("");
@@ -101,14 +106,51 @@ export default function StoryboardBuilderPage() {
 
   const selectedPanel = storyboard.panels.find(p => p.id === selectedPanelId) || storyboard.panels[0];
 
-  // Initialize raw states
+  // Initialize raw states and initial load
+  useEffect(() => {
+    const saved = loadStudioJson<typeof DEFAULT_STORYBOARD | null>(STORAGE_KEYS.STORYBOARD, null);
+    if (saved) {
+      setStoryboard(saved);
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      const firstPanel = saved.panels.find((p: any) => p.id === selectedPanelId) || saved.panels[0];
+      setRawCharacters(firstPanel.characters.join("\n"));
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    } else {
+      setRawProductionNotes(DEFAULT_STORYBOARD.productionNotes.join("\n"));
+      setRawCharacters(selectedPanel.characters.join("\n"));
+    }
+  }, []);
+
   useEffect(() => {
     setRawCharacters(selectedPanel.characters.join("\n"));
   }, [selectedPanelId]);
 
-  useEffect(() => {
-    setRawProductionNotes(storyboard.productionNotes.join("\n"));
-  }, [storyboard.id]);
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.STORYBOARD, storyboard);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson<typeof DEFAULT_STORYBOARD | null>(STORAGE_KEYS.STORYBOARD, null);
+    if (saved) {
+      setStoryboard(saved);
+      setRawProductionNotes(saved.productionNotes.join("\n"));
+      const currentPanel = saved.panels.find((p: any) => p.id === selectedPanelId) || saved.panels[0];
+      setRawCharacters(currentPanel.characters.join("\n"));
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.STORYBOARD);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(storyboard, null, 2));
@@ -122,6 +164,8 @@ export default function StoryboardBuilderPage() {
       setSelectedPanelId("panel-001");
       setRawCharacters(DEFAULT_STORYBOARD.panels[0].characters.join("\n"));
       setRawProductionNotes(DEFAULT_STORYBOARD.productionNotes.join("\n"));
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -245,13 +289,13 @@ export default function StoryboardBuilderPage() {
             ))}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={resetStoryboard}
               className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Storyboard
+              Reset
             </button>
             <button
               onClick={() => {
@@ -259,12 +303,44 @@ export default function StoryboardBuilderPage() {
                 setSelectedPanelId("panel-001");
                 setRawCharacters(DEFAULT_STORYBOARD.panels[0].characters.join("\n"));
                 setRawProductionNotes(DEFAULT_STORYBOARD.productionNotes.join("\n"));
+                setStatusMessage("Loaded Core Storyboard");
+                setTimeout(() => setStatusMessage(""), 3000);
               }}
               className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
             >
               <ImageIcon className="h-4 w-4" />
-              Load Otter Storyboard
+              Load Core
             </button>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+            <button
+              onClick={saveLocally}
+              className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+            >
+              <Save className="h-4 w-4" />
+              Save Locally
+            </button>
+            <button
+              onClick={loadSaved}
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+            >
+              <FolderOpen className="h-4 w-4" />
+              Load Saved
+            </button>
+            <button
+              onClick={clearSaved}
+              className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
+
+            {statusMessage && (
+              <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                {statusMessage}
+              </span>
+            )}
           </div>
         </div>
 

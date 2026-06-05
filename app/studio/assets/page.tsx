@@ -15,10 +15,14 @@ import {
   FileJson,
   Package,
   ScrollText,
-  Briefcase
+  Briefcase,
+  Save,
+  FolderOpen,
+  Trash2
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
+import { loadStudioJson, saveStudioJson, clearStudioJson, STORAGE_KEYS } from "@/lib/localStudioStorage";
 
 type AssetType = "character" | "background" | "prop" | "effect" | "audio" | "ui" | "reference";
 type AssetStatus = "planned" | "draft" | "ready" | "archived";
@@ -119,6 +123,7 @@ export default function AssetsLibraryPage() {
   const [library, setLibrary] = useState<AssetLibrary>(DEFAULT_LIBRARY);
   const [selectedAssetId, setSelectedAssetId] = useState<string>(DEFAULT_LIBRARY.assets[0].id);
   const [copied, setCopied] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   // Raw text states for textareas to prevent cursor jumps
   const [rawNotes, setRawNotes] = useState(DEFAULT_LIBRARY.productionNotes.join("\n"));
@@ -127,15 +132,53 @@ export default function AssetsLibraryPage() {
 
   const selectedAsset = library.assets.find(a => a.id === selectedAssetId) || library.assets[0];
 
-  // Sync raw states when selection or library resets
+  // Sync raw states when selection or library resets and initial load
   useEffect(() => {
-    setRawNotes(library.productionNotes.join("\n"));
-  }, [library.productionNotes]);
+    const saved = loadStudioJson<AssetLibrary | null>(STORAGE_KEYS.ASSETS, null);
+    if (saved) {
+      setLibrary(saved);
+      setRawNotes(saved.productionNotes.join("\n"));
+      const currentAsset = saved.assets.find((a: any) => a.id === selectedAssetId) || saved.assets[0];
+      setRawTags(currentAsset.tags.join("\n"));
+      setRawLinkedTo(currentAsset.linkedTo.join("\n"));
+      setStatusMessage("Loaded saved version");
+      setTimeout(() => setStatusMessage(""), 3000);
+    } else {
+      setRawNotes(library.productionNotes.join("\n"));
+    }
+  }, []);
 
   useEffect(() => {
     setRawTags(selectedAsset.tags.join("\n"));
     setRawLinkedTo(selectedAsset.linkedTo.join("\n"));
   }, [selectedAssetId]);
+
+  const saveLocally = () => {
+    saveStudioJson(STORAGE_KEYS.ASSETS, library);
+    setStatusMessage("Saved locally");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const loadSaved = () => {
+    const saved = loadStudioJson<AssetLibrary | null>(STORAGE_KEYS.ASSETS, null);
+    if (saved) {
+      setLibrary(saved);
+      setRawNotes(saved.productionNotes.join("\n"));
+      const currentAsset = saved.assets.find((a: any) => a.id === selectedAssetId) || saved.assets[0];
+      setRawTags(currentAsset.tags.join("\n"));
+      setRawLinkedTo(currentAsset.linkedTo.join("\n"));
+      setStatusMessage("Loaded saved version");
+    } else {
+      setStatusMessage("No saved version found");
+    }
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const clearSaved = () => {
+    clearStudioJson(STORAGE_KEYS.ASSETS);
+    setStatusMessage("Cleared saved version");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(library, null, 2));
@@ -147,6 +190,8 @@ export default function AssetsLibraryPage() {
     if (confirm("Reset to default asset library?")) {
       setLibrary(DEFAULT_LIBRARY);
       setSelectedAssetId(DEFAULT_LIBRARY.assets[0].id);
+      setStatusMessage("Reset to default");
+      setTimeout(() => setStatusMessage(""), 3000);
     }
   };
 
@@ -333,21 +378,55 @@ export default function AssetsLibraryPage() {
             ))}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={resetLibrary}
               className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Assets
+              Reset
             </button>
             <button
-              onClick={loadCoreAssets}
+              onClick={() => {
+                loadCoreAssets();
+                setStatusMessage("Loaded Core Assets");
+                setTimeout(() => setStatusMessage(""), 3000);
+              }}
               className="flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 hover:bg-violet-500/20 transition"
             >
               <Package className="h-4 w-4" />
-              Load ILLUVRSE Core Assets
+              Load Core
             </button>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+
+            <button
+              onClick={saveLocally}
+              className="flex items-center gap-2 rounded-lg border border-mint/30 bg-mint/5 px-4 py-2 text-sm font-medium text-mint hover:bg-mint/10 transition"
+            >
+              <Save className="h-4 w-4" />
+              Save Locally
+            </button>
+            <button
+              onClick={loadSaved}
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 transition"
+            >
+              <FolderOpen className="h-4 w-4" />
+              Load Saved
+            </button>
+            <button
+              onClick={clearSaved}
+              className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition"
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear
+            </button>
+
+            {statusMessage && (
+              <span className="text-xs font-medium text-violet-300 animate-pulse ml-2">
+                {statusMessage}
+              </span>
+            )}
           </div>
         </div>
 
